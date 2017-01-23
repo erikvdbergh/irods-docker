@@ -1,6 +1,6 @@
-MAINTAINER Erik van den Bergh, Earlham Institute, Norwich
+FROM ubuntu:16.04
 
-FROM ubuntu 16.04
+MAINTAINER Erik van den Bergh, Earlham Institute, Norwich
 
 RUN apt update
 RUN apt install -y wget git vim sudo lsof
@@ -20,16 +20,7 @@ RUN apt clean autoclean && apt autoremove -y
 RUN rm -rf /var/lib/cache /var/lib/log
 
 # db setup
-RUN apt install postgresql-common postgresql-client-9.5 postgresql-9.5
-USER postgres
-
-RUN pg_ctlcluster 9.5 main start
-
-RUN psql -c "CREATE USER irods WITH PASSWORD 'testpassword';"
-RUN psql -c "CREATE DATABASE \"ICAT\";"
-RUN psql -c "GRANT ALL PRIVILEGES ON DATABASE \"ICAT\" TO irods;"
-
-USER root
+RUN apt install -y postgresql-common postgresql-client-9.5 postgresql-9.5
 
 ENV OSVERSION ubuntu14
 ENV IRODSVERSION 4.1.10
@@ -48,6 +39,8 @@ RUN dpkg -i irods-auth-plugin-gsi-1.4-${OSVERSION}-x86_64.deb
 # this is fragile; it is an input file that answers all the questions of the setup script
 # there's no other way ATM, see https://github.com/irods/irods/issues/2790
 COPY setup_answers .
-RUN /var/lib/irods/packaging/./setup_irods.sh < setup_answers
+COPY irods_db_setup.sh .
+RUN chmod u+x irods_db_setup.sh
+RUN ./irods_db_setup.sh
 
 VOLUME /var/lib/irods/iRODS/Vault
