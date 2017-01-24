@@ -3,24 +3,35 @@ FROM ubuntu:16.04
 MAINTAINER Erik van den Bergh, Earlham Institute, Norwich
 
 # install basics
-RUN apt update
-RUN apt install -y wget git vim sudo lsof
+RUN apt update && apt install -y 
+                   wget \
+		   sudo \
+		   lsof
 
 WORKDIR /tmp
 
 RUN wget -q http://toolkit.globus.org/ftppub/gt6/installers/repo/globus-toolkit-repo_latest_all.deb
 RUN dpkg -i globus-*repo*.deb
-RUN apt update
 
 # install deps and globus
-RUN apt install -y libfuse2 libjson-perl unixodbc odbc-postgresql postgresql-client super \
-                   python python-psutil python-requests python-jsonschema libglobus-gssapi-gsi4 \
-		   libglobus-gss-assist3 globus-proxy-utils globus-gsi-cert-utils-progs \
-		   globus-simple-ca globus-gsi globus-gridftp
-
-# clean
-RUN apt clean autoclean && apt autoremove -y
-RUN rm -rf /var/lib/cache /var/lib/log
+RUN apt update && apt install -y \
+                   libfuse2 \
+		   libjson-perl \
+		   unixodbc \
+		   odbc-postgresql \
+		   postgresql-client \
+		   super \
+                   python \
+		   python-psutil \
+		   python-requests \
+		   python-jsonschema \
+		   libglobus-gssapi-gsi4 \
+		   libglobus-gss-assist3 \
+		   globus-proxy-utils \
+		   globus-gsi-cert-utils-progs \
+		   globus-simple-ca \
+		   globus-gsi \
+		   globus-gridftp
 
 # some variables to shorten following commands
 ENV OSVERSION ubuntu14
@@ -37,6 +48,11 @@ RUN wget -q ftp://ftp.renci.org/pub/irods/plugins/irods_auth_plugin_gsi/1.4/irod
 RUN dpkg -i irods-icat-${IRODSVERSION}-${OSVERSION}-x86_64.deb
 RUN dpkg -i irods-database-plugin-postgres-${PLUGINVERSION}-${OSVERSION}-x86_64.deb
 RUN dpkg -i irods-auth-plugin-gsi-1.4-${OSVERSION}-x86_64.deb
+
+# clean 
+RUN apt clean autoclean && apt autoremove -y
+RUN rm -rf /var/lib/cache /var/lib/log /var/lib/apt/lists/*
+RUN rm -rf *.deb
 
 # Increase the logfile rotation so we can keep following it to keep the docker container
 # running. This is a hack and should be changed in 4.2, see 
@@ -57,3 +73,6 @@ COPY irods_db_setup.sh .
 RUN chmod u+x irods_db_setup.sh
 
 ENTRYPOINT ["/tmp/irods_db_setup.sh"]
+
+# expose iRODS port
+EXPOSE 1247
