@@ -1,9 +1,9 @@
 #!/bin/bash
 
-/etc/init.d/postgresql start
+hostname=`hostname`
 
-su postgres -c 'psql -c "CREATE USER irods WITH PASSWORD '\''testpassword'\'';"'
-su postgres -c 'psql -c "CREATE DATABASE \"ICAT\";"'
-su postgres -c 'psql -c "GRANT ALL PRIVILEGES ON DATABASE \"ICAT\" TO irods;"'
+psql -h postgres -U irods ICAT -c "UPDATE r_resc_main SET resc_net='$hostname' WHERE resc_id=9101"
 
 /var/lib/irods/packaging/./setup_irods.sh < setup_answers
+
+tail -f /var/lib/irods/iRODS/server/log/rodsLog.*
