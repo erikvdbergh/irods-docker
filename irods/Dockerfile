@@ -1,78 +1,33 @@
-FROM ubuntu:16.04
+FROM ubuntu:14.04
 
 MAINTAINER Erik van den Bergh, Earlham Institute, Norwich
 
-# install basics
-RUN apt update && apt install -y 
-                   wget \
-		   sudo \
-		   lsof
-
-WORKDIR /tmp
-
-RUN wget -q http://toolkit.globus.org/ftppub/gt6/installers/repo/globus-toolkit-repo_latest_all.deb
-RUN dpkg -i globus-*repo*.deb
-
-# install deps and globus
+# install reqs
 RUN apt update && apt install -y \
-                   libfuse2 \
-		   libjson-perl \
-		   unixodbc \
-		   odbc-postgresql \
-		   postgresql-client \
-		   super \
-                   python \
-		   python-psutil \
-		   python-requests \
-		   python-jsonschema \
-		   libglobus-gssapi-gsi4 \
-		   libglobus-gss-assist3 \
-		   globus-proxy-utils \
-		   globus-gsi-cert-utils-progs \
-		   globus-simple-ca \
-		   globus-gsi \
-		   globus-gridftp
+                   wget \
+		   apt-transport-https \
+		   libxml2 \
+                   vim
 
-# some variables to shorten following commands
-ENV OSVERSION ubuntu14
-ENV IRODSVERSION 4.1.10
-ENV PLUGINVERSION 1.10
-ENV FTPDIR ftp://ftp.renci.org/pub/irods/releases/$IRODSVERSION/$OSVERSION
 
-# get and install irods, db plugin and globus auth
-RUN wget -q $FTPDIR/irods-icat-${IRODSVERSION}-${OSVERSION}-x86_64.deb
-RUN wget -q $FTPDIR/irods-database-plugin-postgres-${PLUGINVERSION}-${OSVERSION}-x86_64.deb
+RUN wget -qO - https://packages.irods.org/irods-signing-key.asc | apt-key add -
+RUN echo "deb [arch=amd64] https://packages.irods.org/apt/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/renci-irods.list
 
-RUN wget -q ftp://ftp.renci.org/pub/irods/plugins/irods_auth_plugin_gsi/1.4/irods-auth-plugin-gsi-1.4-${OSVERSION}-x86_64.deb
-
-RUN dpkg -i irods-icat-${IRODSVERSION}-${OSVERSION}-x86_64.deb
-RUN dpkg -i irods-database-plugin-postgres-${PLUGINVERSION}-${OSVERSION}-x86_64.deb
-RUN dpkg -i irods-auth-plugin-gsi-1.4-${OSVERSION}-x86_64.deb
+RUN apt update && apt install -y irods-server irods-database-plugin-postgres
 
 # clean 
-RUN apt clean autoclean && apt autoremove -y
-RUN rm -rf /var/lib/cache /var/lib/log /var/lib/apt/lists/*
-RUN rm -rf *.deb
-
-# Increase the logfile rotation so we can keep following it to keep the docker container
-# running. This is a hack and should be changed in 4.2, see 
-# https://groups.google.com/d/topic/irod-chat/L6PpTd_5YBc/discussion and 
-# https://github.com/irods/irods/issues/2730
-RUN sed -i '1i $LOGFILE_INT=365;' /var/lib/irods/iRODS/scripts/perl/irodsctl.pl
+#RUN rm -rf /var/lib/cache /var/lib/log /var/lib/apt/lists/*
+#RUN rm -rf *.deb
 
 # create volume to hold actual data
-VOLUME /var/lib/irods/iRODS/Vault
-
-# this is fragile; it is an input file that answers all the questions of the setup script
-# there's no other way before 4.2, see https://github.com/irods/irods/issues/2790
-COPY setup_answers .
+#VOLUME /var/lib/irods/iRODS/Vault
 
 # copy and run setup script; it ends with "tail -f" of the irods log as to keep
 # the docker container running
-COPY irods_db_setup.sh .
-RUN chmod u+x irods_db_setup.sh
+COPY unattended_setup.json /tmp/unattended_setup.json
 
-ENTRYPOINT ["/tmp/irods_db_setup.sh"]
+#ENTRYPOINT ["/var/lib/irods/scripts/setup_irods.py", "tmp/unattended_setup.json"]
+CMD python /var/lib/irods/scripts/setup_irods.py --json_configuration_file /tmp/unattended_setup.json && tail -f /var/lib/irods/log/rodsLog*
 
 # expose iRODS port
 EXPOSE 1247
