@@ -1,0 +1,12 @@
+version: '2'
+services:
+  postgres:
+    build: ./postgres/
+    image: cyverseuk:postgres-irods
+  irods:
+    build: ./irods/
+    image: cyverseuk:irods
+    ports: 
+      - "1247:1247"
+    volumes: 
+      - /mnt/irods/:/var/lib/irods/iRODS/Vault
