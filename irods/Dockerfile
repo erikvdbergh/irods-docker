@@ -20,7 +20,7 @@ RUN apt update && apt install -y irods-server irods-database-plugin-postgres
 #RUN rm -rf *.deb
 
 # create volume to hold actual data
-#VOLUME /var/lib/irods/iRODS/Vault
+VOLUME /var/lib/irods/Vault
 
 # copy and run setup script; it ends with "tail -f" of the irods log as to keep
 # the docker container running
@@ -30,4 +30,4 @@ COPY unattended_setup.json /tmp/unattended_setup.json
 CMD python /var/lib/irods/scripts/setup_irods.py --json_configuration_file /tmp/unattended_setup.json && tail -f /var/lib/irods/log/rodsLog*
 
 # expose iRODS port
-EXPOSE 1247
+EXPOSE 1247 20000-20199

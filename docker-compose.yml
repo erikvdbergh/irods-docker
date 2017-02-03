@@ -8,5 +8,7 @@ services:
     image: cyverseuk:irods
     ports: 
       - "1247:1247"
+      - "20000-20199:20000-20199"
+    hostname: cyverse-iRods
     volumes: 
-      - /mnt/irods/:/var/lib/irods/iRODS/Vault
+      - /mnt/irods/irods_agave:/var/lib/irods/Vault
