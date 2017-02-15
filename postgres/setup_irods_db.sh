@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-password=`cat password`
+password=`cat /docker-entrypoint-initdb.d/password.txt`
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
     CREATE USER irods WITH PASSWORD '$password';
