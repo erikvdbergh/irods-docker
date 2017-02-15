@@ -21,6 +21,7 @@ RUN apt update && apt install -y irods-server irods-database-plugin-postgres
 
 # create volume to hold actual data
 VOLUME /var/lib/irods/Vault
+VOLUME /etc/irods
 
 # copy and run setup script; it ends with "tail -f" of the irods log as to keep
 # the docker container running
