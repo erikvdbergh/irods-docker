@@ -28,7 +28,7 @@
         "transfer_chunk_size_for_parallel_transfer_in_megabytes": 40
     }, 
     "catalog_provider_hosts": [
-        "cyverse-iRods"
+        "irods"
     ], 
     "catalog_service_role": "provider", 
     "default_dir_mode": "0750", 
@@ -38,9 +38,16 @@
     "environment_variables": {
         "IRODS_DATABASE_USER_PASSWORD_SALT": "test"
     }, 
-    "federation": [], 
+    "federation": [
+      {
+        "catalog_provider_hosts": ["someremotehost"],
+        "zone_name": "aZone",
+        "zone_key": "T2l1fJLKBCxEdurW3xhVU61McqKjmUlz",
+        "negotiation_key": "6Vo7HbMRpsoJRHfTGT68IklBHj6xg4tB"
+      }
+    ], 
     "match_hash_policy": "compatible", 
-    "negotiation_key": "Pn7_dpfDN9lC4ZzgxGJICDl0RUNk5FFX", 
+    "negotiation_key": "6Vo7HbMRpsoJRHfTGT68IklBHj6xg4tB",
     "plugin_configuration": {
         "authentication": {}, 
         "database": {
@@ -94,22 +101,22 @@
     "schema_version": "v3", 
     "server_control_plane_encryption_algorithm": "AES-256-CBC", 
     "server_control_plane_encryption_num_hash_rounds": 16, 
-    "server_control_plane_key": "Pn7_dpfDN9lC4ZzgxGJICDl0RUNk5FFX", 
+    "server_control_plane_key": "2FliscZGKTxNtbiXe80Cg7jhd7R2g56A", 
     "server_control_plane_port": 1248, 
     "server_control_plane_timeout_milliseconds": 10000, 
     "server_port_range_end": 20199, 
     "server_port_range_start": 20000, 
     "xmsg_port": 1279, 
     "zone_auth_scheme": "native", 
-    "zone_key": "Pn7_dpfDN9lC4ZzgxGJICDl0RUNk5FFX", 
-    "zone_name": "cyverseUK", 
+    "zone_key": "bTF67H89SbGlILbZldYkl9ue6EBJFx2f", 
+    "zone_name": "demoZone", 
     "zone_port": 1247, 
     "zone_user": "rods"
   },
   "service_account_environment": {
     "irods_client_server_negotiation": "request_server_negotiation", 
     "irods_client_server_policy": "CS_NEG_REFUSE", 
-    "irods_cwd": "/cyverseUK/home/rods", 
+    "irods_cwd": "/demoZone/home/rods", 
     "irods_default_hash_scheme": "SHA256", 
     "irods_default_number_of_transfer_threads": 4, 
     "irods_default_resource": "demoResc", 
@@ -117,18 +124,18 @@
     "irods_encryption_key_size": 32, 
     "irods_encryption_num_hash_rounds": 16, 
     "irods_encryption_salt_size": 8, 
-    "irods_home": "/cyverseUK/home/rods", 
-    "irods_host": "cyverse-iRods", 
+    "irods_home": "/demoZone/home/rods", 
+    "irods_host": "irods", 
     "irods_match_hash_policy": "compatible", 
     "irods_maximum_size_for_single_buffer_in_megabytes": 32, 
     "irods_port": 1247, 
     "irods_server_control_plane_encryption_algorithm": "AES-256-CBC", 
     "irods_server_control_plane_encryption_num_hash_rounds": 16, 
-    "irods_server_control_plane_key": "Pn7_dpfDN9lC4ZzgxGJICDl0RUNk5FFX", 
+    "irods_server_control_plane_key": "2FliscZGKTxNtbiXe80Cg7jhd7R2g56A", 
     "irods_server_control_plane_port": 1248, 
     "irods_transfer_buffer_size_for_parallel_transfer_in_megabytes": 4, 
     "irods_user_name": "rods", 
-    "irods_zone_name": "cyverseUK", 
+    "irods_zone_name": "demoZone", 
     "schema_name": "irods_environment", 
     "schema_version": "v3"
   }
