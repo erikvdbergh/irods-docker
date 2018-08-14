@@ -1,17 +1,18 @@
-FROM ubuntu:14.04
+FROM ubuntu:18.04
 
 MAINTAINER Erik van den Bergh, Earlham Institute, Norwich
 
 # install reqs
 RUN apt update && apt install -y \
-                   wget \
-		   apt-transport-https \
-		   libxml2 \
-                   vim
+                    wget \
+	                  apt-transport-https \
+		                libxml2 \
+                    lsb-release \
+                    gnupg
 
 
 RUN wget -qO - https://packages.irods.org/irods-signing-key.asc | apt-key add -
-RUN echo "deb [arch=amd64] https://packages.irods.org/apt/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/renci-irods.list
+RUN echo "deb [arch=amd64] https://packages.irods.org/apt/ xenial main" > /etc/apt/sources.list.d/renci-irods.list
 
 RUN apt update && apt install -y irods-server irods-database-plugin-postgres
 
