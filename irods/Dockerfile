@@ -27,6 +27,7 @@ VOLUME /etc/irods
 # copy and run setup script; it ends with "tail -f" of the irods log as to keep
 # the docker container running
 COPY unattended_setup.json /tmp/unattended_setup.json
+COPY ssl_negotiate.re /etc/irods/
 
 #ENTRYPOINT ["/var/lib/irods/scripts/setup_irods.py", "tmp/unattended_setup.json"]
 CMD python /var/lib/irods/scripts/setup_irods.py --json_configuration_file /tmp/unattended_setup.json && tail -f /var/lib/irods/log/rodsLog*
