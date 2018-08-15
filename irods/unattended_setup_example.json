@@ -6,8 +6,8 @@
     "access_entries": []
   },
   "host_system_information": {
-    "service_account_user": "irods",
-    "service_account_group": "irods"
+    "service_account_user_name": "irods",
+    "service_account_group_name": "irods"
   },
   "hosts_config": {
     "schema_name": "hosts_config",
