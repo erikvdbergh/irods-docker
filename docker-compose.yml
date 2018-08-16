@@ -2,15 +2,20 @@ version: '2'
 services:
   postgres:
     build: ./postgres/
-    image: cyverseuk:postgres-irods
+    image: wur/postgres-irods
+    hostname: postgres
   irods:
     build: ./irods/
-    image: cyverseuk:irods
+    image: wur/irods
     ports: 
       - "1247:1247"
       - "20000-20199:20000-20199"
-    hostname: cyverse-iRods
-    extra_hosts:
-      - "grassroots-3:10.0.72.101"
+    hostname: irods
     volumes: 
-      - /mnt/irods/irods_agave:/var/lib/irods/Vault
+      - /mnt/data:/var/lib/irods/Vault
+  davrods:
+    build: ./davrods/
+    image: wur/davrods
+    ports:
+      - "80:80"
+    hostname: davrods

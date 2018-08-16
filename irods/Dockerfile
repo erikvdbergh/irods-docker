@@ -27,10 +27,19 @@ VOLUME /etc/irods
 # copy and run setup script; it ends with "tail -f" of the irods log as to keep
 # the docker container running
 COPY unattended_setup.json /tmp/unattended_setup.json
-COPY ssl_negotiate.re /etc/irods/
 
-#ENTRYPOINT ["/var/lib/irods/scripts/setup_irods.py", "tmp/unattended_setup.json"]
-CMD python /var/lib/irods/scripts/setup_irods.py --json_configuration_file /tmp/unattended_setup.json && tail -f /var/lib/irods/log/rodsLog*
+RUN echo  '#!/bin/bash \n\
+          python /var/lib/irods/scripts/setup_irods.py --json_configuration_file /tmp/unattended_setup.json && \n\
+          tail -f /var/lib/irods/log/rodsLog*             \n\
+                                                          \n\
+          function finish {                               \n\
+            service irods-server stop                     \n\
+          }                                               \n\
+          trap finish EXIT SIGINT SIGHUP SIGQUIT SIGTERM  \n\
+          ' > /usr/bin/entry
+RUN chmod u+x /usr/bin/entry
+
+CMD entry
 
 # expose iRODS port
 EXPOSE 1247 20000-20199
